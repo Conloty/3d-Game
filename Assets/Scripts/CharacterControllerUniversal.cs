@@ -1,44 +1,51 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterControllerUniversal : MonoBehaviour
 {
-    [SerializeField] float Movespeed = 8f;
-
-    private PlayerInputsManager input;
-    private CharacterController controller;
-
+    [SerializeField] float moveSpeed = 8f;
+    [SerializeField] float rotationSpeed = 20f;
     [SerializeField] GameObject mainCam;
     [SerializeField] Transform cameraFollowTarget;
+
+    private PlayerInputsManager input;
+    private Rigidbody rb;
     float xRotation;
     float yRotation;
-    
+
     private void Start()
     {
         input = GetComponent<PlayerInputsManager>();
-        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+
+        // ��������� �������� �� ���� X � Z, ����� �������� �� ���������������
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        float speed = 0f;
-        Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
-        float targetRotation = 0;
-        if(input.move != Vector2.zero) 
-        {
-            speed = Movespeed;
-            targetRotation = Quaternion.LookRotation(inputDir).eulerAngles.y + mainCam.transform.rotation.eulerAngles.y;
-            Quaternion rotation = Quaternion.Euler(0, targetRotation, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 20 * Time.deltaTime);
-        }
-        Vector3 targetDirection = Quaternion.Euler(0, targetRotation, 0) * Vector3.forward;
-        controller.Move(targetDirection * speed * Time.deltaTime);
+        MoveCharacter();
     }
 
     private void LateUpdate()
     {
         CameraRotation();
+    }
 
+    void MoveCharacter()
+    {
+        Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
+        if (inputDir != Vector3.zero)
+        {
+            // ����������� �������� � ����������� �� ������
+            float targetRotation = Quaternion.LookRotation(inputDir).eulerAngles.y + mainCam.transform.rotation.eulerAngles.y;
+            Quaternion rotation = Quaternion.Euler(0, targetRotation, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+
+            // ����������� ���������
+            Vector3 targetDirection = rotation * Vector3.forward;
+            Vector3 velocity = targetDirection * moveSpeed;
+            rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z); // ��������� ������� ������������ ��������
+        }
     }
 
     void CameraRotation()
@@ -50,8 +57,6 @@ public class CharacterControllerUniversal : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0f);
 
         cameraFollowTarget.rotation = rotation;
-
     }
-
 }
 
