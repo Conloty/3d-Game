@@ -17,7 +17,6 @@ public class CharacterControllerUniversal : MonoBehaviour
         input = GetComponent<PlayerInputsManager>();
         rb = GetComponent<Rigidbody>();
 
-        // ��������� �������� �� ���� X � Z, ����� �������� �� ���������������
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
@@ -36,15 +35,13 @@ public class CharacterControllerUniversal : MonoBehaviour
         Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
         if (inputDir != Vector3.zero)
         {
-            // ����������� �������� � ����������� �� ������
             float targetRotation = Quaternion.LookRotation(inputDir).eulerAngles.y + mainCam.transform.rotation.eulerAngles.y;
             Quaternion rotation = Quaternion.Euler(0, targetRotation, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
 
-            // ����������� ���������
             Vector3 targetDirection = rotation * Vector3.forward;
             Vector3 velocity = targetDirection * moveSpeed;
-            rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z); // ��������� ������� ������������ ��������
+            rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
         }
     }
 
