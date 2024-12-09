@@ -6,6 +6,7 @@ public class CharacterControllerUniversal : MonoBehaviour
     [SerializeField] float rotationSpeed = 20f;
     [SerializeField] GameObject mainCam;
     [SerializeField] Transform cameraFollowTarget;
+    [SerializeField] float health = 1000f;
 
     private PlayerInputsManager input;
     private Rigidbody rb;

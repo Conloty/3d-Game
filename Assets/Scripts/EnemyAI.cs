@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+    [SerializeField] float HP = 100f;
     public Transform player;
     public float chaseRange = 10f;
     private NavMeshAgent agent;
@@ -12,6 +13,7 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        animator.SetBool("isWalking", true);
 
         if (player == null)
         {
