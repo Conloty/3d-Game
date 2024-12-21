@@ -5,7 +5,7 @@ public class EnemyAI : MonoBehaviour
 {
     [SerializeField] float HP = 100f;
     public Transform player;
-    public float chaseRange = 10f;
+    public float chaseRange = 30f;
     private NavMeshAgent agent;
     private Animator animator;
 
@@ -13,7 +13,6 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        animator.SetBool("isWalking", true);
 
         if (player == null)
         {
@@ -28,10 +27,12 @@ public class EnemyAI : MonoBehaviour
         if (distanceToPlayer <= chaseRange)
         {
             agent.SetDestination(player.position);
+            animator.SetBool("isWalking", true);
         }
         else
         {
             agent.ResetPath();
+            animator.SetBool("isWalking", false);
         }
     }
 }

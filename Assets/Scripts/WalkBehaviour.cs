@@ -5,31 +5,27 @@ public class WalkBehaviour : StateMachineBehaviour
 {
     NavMeshAgent agent;
     Transform player;
-    float chaseRange = 10;
+    float attackRange = 5;
+    float chaseRange = 30;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent = animator.GetComponent<NavMeshAgent>();
-        agent.speed = 4;
-
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log($"Setting destination to: {player.position}");
-        Debug.Log($"Agent position: {agent.transform.position}");
-        Debug.Log($"Agent is on NavMesh: {agent.isOnNavMesh}");
-
         agent.SetDestination(player.position);
         float distance = Vector3.Distance(animator.transform.position, player.position);
 
+        if(distance < attackRange) animator.SetBool("isAttacking", true);
         
-
+        if(distance > 5) animator.SetBool("isWalking", false);
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        agent?.SetDestination(agent.transform.position);
+        agent.SetDestination(agent.transform.position);
     }
 }

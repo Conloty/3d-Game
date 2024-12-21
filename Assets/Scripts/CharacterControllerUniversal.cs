@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharacterControllerUniversal : MonoBehaviour
 {
@@ -6,7 +7,10 @@ public class CharacterControllerUniversal : MonoBehaviour
     [SerializeField] float rotationSpeed = 20f;
     [SerializeField] GameObject mainCam;
     [SerializeField] Transform cameraFollowTarget;
-    [SerializeField] float health = 1000f;
+    Animator animator;
+
+    public static float health;
+    public static bool gameOver;
 
     private PlayerInputsManager input;
     private Rigidbody rb;
@@ -17,8 +21,12 @@ public class CharacterControllerUniversal : MonoBehaviour
     {
         input = GetComponent<PlayerInputsManager>();
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+        
+        health = 10000f;
+        gameOver = false;
 
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     private void FixedUpdate()
@@ -29,6 +37,18 @@ public class CharacterControllerUniversal : MonoBehaviour
     private void LateUpdate()
     {
         CameraRotation();
+    }
+
+    //attack
+    private void Update()
+    {
+        if (Input.GetButtonDown("Fire1")) animator.SetBool("isAttack", true);
+        else if (Input.GetButtonUp("Fire1")) animator.SetBool("isAttack", false);
+
+        if (gameOver)
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
     }
 
     void MoveCharacter()
@@ -55,6 +75,16 @@ public class CharacterControllerUniversal : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(xRotation, yRotation, 0f);
 
         cameraFollowTarget.rotation = rotation;
+    }
+
+    public static void Damage(int damageCount)
+    {
+        health -= damageCount;
+        Debug.Log("current health: " + health);
+        if(health <= 0)
+        {
+            gameOver = true;
+        }
     }
 }
 
