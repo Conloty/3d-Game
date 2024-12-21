@@ -11,6 +11,7 @@ public class CharacterControllerUniversal : MonoBehaviour
 
     public static float health;
     public static bool gameOver;
+    private bool isAttacking = false;
 
     private PlayerInputsManager input;
     private Rigidbody rb;
@@ -39,11 +40,21 @@ public class CharacterControllerUniversal : MonoBehaviour
         CameraRotation();
     }
 
-    //attack
     private void Update()
     {
-        if (Input.GetButtonDown("Fire1")) animator.SetBool("isAttack", true);
-        else if (Input.GetButtonUp("Fire1")) animator.SetBool("isAttack", false);
+        if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        {
+            animator.SetBool("isRunning", true);
+        } else
+        {
+            animator.SetBool("isRunning", false);
+        }
+        if (Input.GetMouseButton(0))
+        {
+            animator.SetBool("isAttacking", true);
+            animator.SetBool("isRunning", false);
+            isAttacking = true;
+        }
 
         if (gameOver)
         {
@@ -51,18 +62,32 @@ public class CharacterControllerUniversal : MonoBehaviour
         }
     }
 
+    public void OnAttackAnimationEnd()
+    {
+        animator.SetBool("isAttacking", false);
+        isAttacking = false;
+    }
+
+    public void OnAttackAnimationStart()
+    {
+        animator.SetBool("isRunning", false);
+    }
+
     void MoveCharacter()
     {
-        Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
-        if (inputDir != Vector3.zero)
+        if (!isAttacking)
         {
-            float targetRotation = Quaternion.LookRotation(inputDir).eulerAngles.y + mainCam.transform.rotation.eulerAngles.y;
-            Quaternion rotation = Quaternion.Euler(0, targetRotation, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+            Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
+            if (inputDir != Vector3.zero)
+            {
+                float targetRotation = Quaternion.LookRotation(inputDir).eulerAngles.y + mainCam.transform.rotation.eulerAngles.y;
+                Quaternion rotation = Quaternion.Euler(0, targetRotation, 0);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
 
-            Vector3 targetDirection = rotation * Vector3.forward;
-            Vector3 velocity = targetDirection * moveSpeed;
-            rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
+                Vector3 targetDirection = rotation * Vector3.forward;
+                Vector3 velocity = targetDirection * moveSpeed;
+                rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
+            }
         }
     }
 
