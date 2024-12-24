@@ -9,8 +9,9 @@ public class CharacterControllerUniversal : MonoBehaviour
     [SerializeField] Transform cameraFollowTarget;
     Animator animator;
 
-    public static float health;
+    public static float health = 1200f;
     public static bool gameOver;
+
     private bool isAttacking = false;
 
     private PlayerInputsManager input;
@@ -24,7 +25,7 @@ public class CharacterControllerUniversal : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         
-        health = 10000f;
+        health = 1200f;
         gameOver = false;
 
         rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -49,11 +50,11 @@ public class CharacterControllerUniversal : MonoBehaviour
         {
             animator.SetBool("isRunning", false);
         }
-        if (Input.GetMouseButton(0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             animator.SetBool("isAttacking", true);
-            animator.SetBool("isRunning", false);
             isAttacking = true;
+            Debug.Log("isAttack in Mouse0: " + isAttacking);
         }
 
         if (gameOver)
@@ -62,15 +63,33 @@ public class CharacterControllerUniversal : MonoBehaviour
         }
     }
 
-    public void OnAttackAnimationEnd()
+    private void OnTriggerEnter(Collider other)
     {
-        animator.SetBool("isAttacking", false);
-        isAttacking = false;
+        Debug.Log("isAttack in onTriggerEnter, before CompareTag: " + isAttacking);
+        if (other.CompareTag("Enemy") && isAttacking)
+        {
+            EnemyManager enemy = other.GetComponent<EnemyManager>();
+            if (enemy != null)
+            {
+                enemy.GetDamage(25);
+            }
+            isAttacking = false;
+            Debug.Log("isAttack in onTriggerEnter, after CompareTag: " + isAttacking);
+        }
     }
 
     public void OnAttackAnimationStart()
     {
         animator.SetBool("isRunning", false);
+        isAttacking = true;
+        Debug.Log("isAttack in AnimStart " + isAttacking);
+    }
+
+    public void OnAttackAnimationEnd()
+    {
+        animator.SetBool("isAttacking", false);
+        isAttacking = false;
+        Debug.Log("isAttack in AnimEnd " + isAttacking);
     }
 
     void MoveCharacter()
@@ -102,7 +121,7 @@ public class CharacterControllerUniversal : MonoBehaviour
         cameraFollowTarget.rotation = rotation;
     }
 
-    public static void Damage(int damageCount)
+    public static void GetDamage(int damageCount)
     {
         health -= damageCount;
         Debug.Log("current health: " + health);

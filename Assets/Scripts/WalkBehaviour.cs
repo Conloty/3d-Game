@@ -6,7 +6,6 @@ public class WalkBehaviour : StateMachineBehaviour
     NavMeshAgent agent;
     Transform player;
     float attackRange = 5;
-    float chaseRange = 30;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -26,6 +25,6 @@ public class WalkBehaviour : StateMachineBehaviour
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        agent.SetDestination(agent.transform.position);
+        agent.ResetPath();
     }
 }
