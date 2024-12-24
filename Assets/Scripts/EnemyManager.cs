@@ -62,6 +62,10 @@ public class EnemyManager : MonoBehaviour
     public void GetDamage(int damage)
     {
         HP -= damage;
+        if(HP <= 0)
+        {
+            Destroy(gameObject);
+        }
         Debug.Log("Enemy health: " + HP);
     }
 }
