@@ -54,7 +54,7 @@ public class CharacterControllerUniversal : MonoBehaviour
         {
             animator.SetBool("isRunning", false);
         }
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.J)) && !isAttacking)
         {
             isAttacking = true;
             canAttack = true;
