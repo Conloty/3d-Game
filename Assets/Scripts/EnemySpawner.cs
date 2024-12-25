@@ -4,7 +4,10 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public int countEnemies = 3;
-    
+    public static int countOfDefeatedEnemies = 0;
+    public static int totalCountOfDefeatedEnemies = 0;
+    public static bool startRound = true;
+
     public Vector3[] spawnPos = {
         new Vector3(-2.75f, 1f, -52.36f),
         new Vector3(15.45f, 1f, -44.58f),
@@ -22,6 +25,7 @@ public class EnemySpawner : MonoBehaviour
 
             Instantiate(enemyPrefab, randomPos, Quaternion.identity);
         }
+        startRound = false;
     }
 
     //для вида позиций спавна
@@ -31,6 +35,18 @@ public class EnemySpawner : MonoBehaviour
         foreach (Vector3 pos in spawnPos)
         {
             Gizmos.DrawSphere(pos, 0.5f);
+        }
+    }
+
+    public static void Count()
+    {
+        countOfDefeatedEnemies++;
+        totalCountOfDefeatedEnemies++;
+        Debug.Log("Defeated enemies: " + totalCountOfDefeatedEnemies);
+        if(countOfDefeatedEnemies == 3)
+        {
+            countOfDefeatedEnemies = 0;
+            startRound = true;
         }
     }
 }

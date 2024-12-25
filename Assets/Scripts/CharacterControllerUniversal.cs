@@ -9,10 +9,13 @@ public class CharacterControllerUniversal : MonoBehaviour
     [SerializeField] Transform cameraFollowTarget;
     Animator animator;
 
+    public Collider trigger;
+    public int attack = 25;
+    private bool canAttack = false;
+    public bool isAttacking = false;
+
     public static float health = 1200f;
     public static bool gameOver;
-
-    private bool isAttacking = false;
 
     private PlayerInputsManager input;
     private Rigidbody rb;
@@ -24,7 +27,8 @@ public class CharacterControllerUniversal : MonoBehaviour
         input = GetComponent<PlayerInputsManager>();
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-        
+        trigger = GetComponentInChildren<Collider>();
+
         health = 1200f;
         gameOver = false;
 
@@ -33,7 +37,7 @@ public class CharacterControllerUniversal : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MoveCharacter();
+        if(!canAttack) MoveCharacter();
     }
 
     private void LateUpdate()
@@ -50,11 +54,11 @@ public class CharacterControllerUniversal : MonoBehaviour
         {
             animator.SetBool("isRunning", false);
         }
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
         {
-            animator.SetBool("isAttacking", true);
             isAttacking = true;
-            Debug.Log("isAttack in Mouse0: " + isAttacking);
+            canAttack = true;
+            animator.SetBool("isAttacking", true);
         }
 
         if (gameOver)
@@ -65,37 +69,28 @@ public class CharacterControllerUniversal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("isAttack in onTriggerEnter, before CompareTag: " + isAttacking);
-        if (other.CompareTag("Enemy") && isAttacking)
+        if(other.CompareTag("Enemy") && canAttack)
         {
-            EnemyManager enemy = other.GetComponent<EnemyManager>();
-            if (enemy != null)
-            {
-                enemy.GetDamage(25);
-            }
-            isAttacking = false;
-            Debug.Log("isAttack in onTriggerEnter, after CompareTag: " + isAttacking);
+            EnemyManager em = other.GetComponent<EnemyManager>();
+            em.GetDamage(attack);
+            canAttack = false;
         }
     }
 
-    public void OnAttackAnimationStart()
+    public void OnAnimatorAttackStart()
     {
-        animator.SetBool("isRunning", false);
-        isAttacking = true;
-        Debug.Log("isAttack in AnimStart " + isAttacking);
+        Debug.Log("Attack started. canAttack = " + canAttack);
     }
-
-    public void OnAttackAnimationEnd()
+    public void OnAnimatorAttackEnd()
     {
-        animator.SetBool("isAttacking", false);
+        canAttack = false;
         isAttacking = false;
-        Debug.Log("isAttack in AnimEnd " + isAttacking);
+        animator.SetBool("isAttacking", false);
+        Debug.Log("Attack ended. canAttack = " + canAttack);
     }
 
     void MoveCharacter()
     {
-        if (!isAttacking)
-        {
             Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
             if (inputDir != Vector3.zero)
             {
@@ -107,7 +102,6 @@ public class CharacterControllerUniversal : MonoBehaviour
                 Vector3 velocity = targetDirection * moveSpeed;
                 rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
             }
-        }
     }
 
     void CameraRotation()

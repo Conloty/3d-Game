@@ -831,6 +831,10 @@ PrefabInstance:
       value: spiderVN1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5fdf04d6a8f7b1c44b11eff4aaf99ec0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5fdf04d6a8f7b1c44b11eff4aaf99ec0, type: 3}
       propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}

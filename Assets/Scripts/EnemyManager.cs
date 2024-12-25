@@ -4,8 +4,9 @@ using UnityEngine.AI;
 public class EnemyManager : MonoBehaviour
 {
     public Collider attackCollider;
+    private bool canAttack = false;
     public int damageCount = 10;
-    public float HP = 100f;
+    public int HP = 100;
     private void Start()
     {
         if (attackCollider != null)
@@ -16,12 +17,13 @@ public class EnemyManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && canAttack)
         {
             CharacterControllerUniversal player = other.GetComponent<CharacterControllerUniversal>();
             if (player != null)
             {
                 CharacterControllerUniversal.GetDamage(damageCount);
+                canAttack = false;
             }
         }
     }
@@ -31,6 +33,7 @@ public class EnemyManager : MonoBehaviour
         if (attackCollider != null)
         {
             attackCollider.enabled = true;
+            canAttack = true;
         }
     }
 
@@ -39,31 +42,16 @@ public class EnemyManager : MonoBehaviour
         if (attackCollider != null)
         {
             attackCollider.enabled = false;
+            canAttack = false;
         }
     }
-    /*
-    public void StartEnemyCoroutine(System.Collections.IEnumerator routine)
-    {
-        StartCoroutine(routine);
-    }
-    //
-    public void EnableAttackColliderForDuration(float duration)
-    {
-        StartCoroutine(EnableColliderTemporarily(duration));
-    }
-
-    private System.Collections.IEnumerator EnableColliderTemporarily(float duration)
-    {
-        attackCollider.enabled = true;
-        yield return new WaitForSeconds(duration);
-        attackCollider.enabled = false;
-    }*/
 
     public void GetDamage(int damage)
     {
         HP -= damage;
         if(HP <= 0)
         {
+            EnemySpawner.Count();
             Destroy(gameObject);
         }
         Debug.Log("Enemy health: " + HP);

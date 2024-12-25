@@ -28,11 +28,6 @@ public class AttackBehaviour : StateMachineBehaviour
         {
             agent.isStopped = true;
         }
-        var manager = animator.GetComponentInParent<EnemyManager>();
-        if (manager != null)
-        {
-            //manager.EnableAttackColliderForDuration(0.5f);
-        }
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -54,7 +49,6 @@ public class AttackBehaviour : StateMachineBehaviour
             var manager = animator.GetComponentInParent<EnemyManager>();
             if (manager != null)
             {
-                //manager.StartEnemyCoroutine(AttackCooldown());
                 manager.EnableAttackCollider();
             }
         }
@@ -76,13 +70,7 @@ public class AttackBehaviour : StateMachineBehaviour
             );
         }
     }
-    /*
-    private System.Collections.IEnumerator AttackCooldown()
-    {
-        yield return new WaitForSeconds(attackCooldown);
-        canAttack = true;
-    }
-    */
+
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (attackCollider != null)
@@ -94,5 +82,7 @@ public class AttackBehaviour : StateMachineBehaviour
         {
             agent.isStopped = false;
         }
+
+        animator.ResetTrigger("Attack");
     }
 }
