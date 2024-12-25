@@ -3,26 +3,15 @@ using UnityEngine.AI;
 
 public class AttackBehaviour : StateMachineBehaviour
 {
-    public int damageCount = 150;
-    public float attackCooldown = 2.0f;
     public float attackDistance = 5.0f;
 
     private Transform player;
     private NavMeshAgent agent;
-    private Collider attackCollider;
-
-    private bool canAttack = true;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         agent = animator.GetComponent<NavMeshAgent>();
-        attackCollider = animator.transform.Find("Арматура/Ik11.L/DamageItem")?.GetComponent<Collider>();
-
-        if (attackCollider != null)
-        {
-            attackCollider.enabled = false;
-        }
 
         if (agent != null)
         {
@@ -42,17 +31,6 @@ public class AttackBehaviour : StateMachineBehaviour
         {
             animator.SetBool("isAttacking", false);
         }
-        else if (canAttack)
-        {
-            canAttack = false;
-            animator.SetTrigger("Attack");
-            var manager = animator.GetComponentInParent<EnemyManager>();
-            if (manager != null)
-            {
-                manager.EnableAttackCollider();
-            }
-        }
-
     }
 
     private void RotateTowardsPlayer(Animator animator)
@@ -73,16 +51,10 @@ public class AttackBehaviour : StateMachineBehaviour
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (attackCollider != null)
-        {
-            attackCollider.enabled = false;
-        }
-
         if (agent != null)
         {
             agent.isStopped = false;
         }
-
-        animator.ResetTrigger("Attack");
+        animator.SetBool("isAttacking", false);
     }
 }

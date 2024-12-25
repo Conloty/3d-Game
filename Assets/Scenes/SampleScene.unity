@@ -4762,7 +4762,6 @@ MonoBehaviour:
   cameraFollowTarget: {fileID: 2010699126}
   trigger: {fileID: 2113857521}
   attack: 25
-  canAttack: 0
   isAttacking: 0
 --- !u!114 &1797384017
 MonoBehaviour:

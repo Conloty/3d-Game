@@ -4,46 +4,38 @@ using UnityEngine.AI;
 public class EnemyManager : MonoBehaviour
 {
     public Collider attackCollider;
-    private bool canAttack = false;
-    public int damageCount = 10;
+    
+    public int damageCount = 150;
     public int HP = 100;
+    public bool canAttack = false;
+
     private void Start()
     {
-        if (attackCollider != null)
-        {
-            attackCollider.enabled = false;
-        }
+
+        attackCollider.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("in trigger canAttack " + canAttack);
         if (other.CompareTag("Player") && canAttack)
         {
-            CharacterControllerUniversal player = other.GetComponent<CharacterControllerUniversal>();
-            if (player != null)
-            {
-                CharacterControllerUniversal.GetDamage(damageCount);
-                canAttack = false;
-            }
-        }
-    }
-
-    public void EnableAttackCollider()
-    {
-        if (attackCollider != null)
-        {
-            attackCollider.enabled = true;
-            canAttack = true;
-        }
-    }
-
-    public void DisableAttackCollider()
-    {
-        if (attackCollider != null)
-        {
-            attackCollider.enabled = false;
+            Debug.Log("inside tigger");
+            CharacterControllerUniversal.GetDamage(damageCount);
             canAttack = false;
         }
+    }
+
+    public void AttackStart()
+    {
+        canAttack = true;
+        attackCollider.enabled = true;
+    }
+
+    public void AttackEnd()
+    {
+        canAttack = false;
+        attackCollider.enabled = false;
     }
 
     public void GetDamage(int damage)
