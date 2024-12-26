@@ -65,6 +65,7 @@ public class CharacterControllerUniversal : MonoBehaviour
         {
             EnemySpawner.countOfDefeatedEnemies = 0;
             EnemySpawner.totalCountOfDefeatedEnemies = 0;
+            EnemySpawner.startRound = true;
             SceneManager.LoadScene("SampleScene");
         }
     }
