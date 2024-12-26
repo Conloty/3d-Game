@@ -63,6 +63,8 @@ public class CharacterControllerUniversal : MonoBehaviour
 
         if (gameOver)
         {
+            EnemySpawner.countOfDefeatedEnemies = 0;
+            EnemySpawner.totalCountOfDefeatedEnemies = 0;
             SceneManager.LoadScene("SampleScene");
         }
     }
