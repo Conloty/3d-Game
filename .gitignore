@@ -19,9 +19,6 @@
 *.pidb
 *.opendb
 
-# Unity-specific meta files
-*.meta
-
 # Crash reports and build artifacts
 sysinfo.txt
 *.apk
